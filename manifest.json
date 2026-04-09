@@ -1,0 +1,10 @@
+{
+  "name": "Scrap Quick Reference",
+  "short_name": "ScrapRef",
+  "description": "Top items to scrap with reference values, local notes, calculators, and offline support.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0f14",
+  "theme_color": "#0b5fff",
+  "icons": []
+}
