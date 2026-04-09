@@ -578,8 +578,7 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg failed', err));
   });
 }
-</script>
-<script>
+
   // --- Page toggle: Home vs Guide ---
   function showPage(which) {
     const homeMain = document.querySelector('main');     // existing Home page
