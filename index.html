@@ -4,10 +4,331 @@
   <meta charset="utf-8" />
   <title>Scrap Quick Reference</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  ./manifest.json
+  <linkifest.json
   <meta name="theme-color" content="#0b5fff" />
+  <style>
+    :root {
+      --bg: #0b0f14; --card: #121822; --text: #e8eef9; --muted: #9fb0ca;
+      --accent: #0b5fff; --good: #2ecc71; --warn: #ffb020;
+    }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+           background: var(--bg); color: var(--text); }
+    header { padding: 16px; background: linear-gradient(90deg,#0b5fff,#6a7cff);
+             position: sticky; top:0; z-index: 100; }
+    h1 { margin:0; font-size: 1.25rem; }
+    .sub { font-size: 0.85rem; color: #eaf2ff; }
+    main { padding: 12px; max-width: 980px; margin: 0 auto; }
+    .controls { display:flex; gap:8px; flex-wrap:wrap; margin: 8px 0 16px; }
+    select, input[type="text"], input[type="number"] {
+      background: var(--card); color: var(--text); border: 1px solid #2a3342;
+      padding: 8px; border-radius: 8px; min-width: 160px;
+    }
+    .search { flex:1; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 12px; }
+    .card { background: var(--card); border: 1px solid #1f2735; border-radius: 12px; padding: 12px; }
+    .card h2 { margin: 0 0 6px; font-size: 1.05rem; }
+    .row { display:flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .label { color: var(--muted); font-size: 0.85rem; }
+    .price { font-weight: 700; }
+    .range { font-size: 0.9rem; color: var(--muted); }
+    .actions { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+    button {
+      background: #172133; color: var(--text); border: 1px solid #283245;
+      padding: 8px 10px; border-radius: 8px; cursor: pointer; font-weight: 600;
+    }
+    button.primary { background: var(--accent); border-color: var(--accent); color: white; }
+    .fav { color: gold; cursor: pointer; }
+    .mini { font-size: 0.85rem; color: var(--muted); }
+    footer { padding: 16px; color: var(--muted); text-align: center; }
+  </style>
 </head>
 <body>
-Scrap Quick Reference App Placeholder
+<header>
+  <h1>Scrap Quick Reference</h1>
+  <div class="sub">Top items, reference values, local yards & calculators — works offline</div>
+</header>
+
+<main>
+  <!-- Controls -->
+  <div class="controls">
+    <input id="search" class="search" type="text" placeholder="Search items (e.g., copper, batteries, shred)"/>
+    <select id="unit">
+      <option value="lb">$ / lb</option>
+      <option value="ton">$ / ton</option>
+    </select>
+    <select id="location">
+      <option value="MO" selected>Missouri</option>
+      <option value="US">United States</option>
+    </select>
+    <button class="primary" id="reset">Reset My Local Prices</button>
+  </div>
+
+  <!-- Reference Cards -->
+  <div class="grid" id="cards"></div>
+
+  <!-- Calculators & Tools -->
+  <div class="grid" style="margin-top:12px">
+    <div class="card">
+      <h2>🧮 Copper Wire → Weight & Payout</h2>
+      <div class="mini">Uses AWG lb/1000 ft (bare copper). Set your local #1 bare bright price to estimate payout.</div>
+      <div class="actions">
+        <label>AWG:
+          <select id="awg">
+            <option>6</option><option>8</option><option>10</option><option selected>12</option><option>14</option><option>16</option><option>18</option>
+          </select>
+        </label>
+        <label>Length (ft): <input id="lenft" type="number" value="100" /></label>
+        <label>Wires: <input id="count" type="number" value="1" /></label>
+        <label>Local price ($/lb): <input id="cuprice" type="number" value="4.23" step="0.01" /></label>
+        <button class="primary" id="calcCu">Calculate</button>
+      </div>
+      <div id="cuout" class="range"></div>
+    </div>
+
+    <div class="card">
+      <h2>⚖️ Ferrous Converter & Estimator</h2>
+      <div class="actions">
+        <label>Weight: <input id="ferrousW" type="number" value="500" /></label>
+        <label>Units:
+          <select id="ferrousU"><option value="lb" selected>lb</option><option value="ton">ton</option></select>
+        </label>
+        <label>Price ($/ton): <input id="ferrousP" type="number" value="165" /></label>
+        <button class="primary" id="calcFe">Estimate</button>
+      </div>
+      <div id="feout" class="range"></div>
+      <div class="mini">Tip: Missouri shredded steel examples seen ~ $135–$165/ton. Verify live rates with local yards.</div>
+    </div>
+
+    <div class="card">
+      <h2>🔁 One‑tap Refresh (Live Price Links)</h2>
+      <div class="actions">
+        <a href="https://iscrapapp.com/" target="_blank">iScrap — National Prices</a>
+        <a href="https://www.recyclingtoday.com/rmdas/" target="_blank">RMDAS — Shred Index</a>
+        <a href="https://www.scrapmonster.com/scrap-prices" target="_blank">ScrapMonster — US & Global</a>
+        <a href="https://www.scrapmonster.com/scrap-yards/prices/missouri/state/3390" target="_blank">Missouri Yard Averages</a>
+        <a href="https://www.priceofscrapmetals.com/missouri/columbia/" target="_blank">Columbia, MO — Reference Page</a>
+      </div>
+      <div class="mini">Open these, check live prices, then update “My Local Price” on the cards.</div>
+    </div>
+
+    <div class="card">
+      <h2>📍 Columbia, MO — Yard Shortcuts</h2>
+      <ul class="mini">
+        <li><strong>Advantage Metals Recycling</strong> — 705 N Proctor Dr • <a target="_blank" href="https://advantagerecycling.com/columbia-mo/">Website</a></li>
+        <li><strong>New World Recycling</strong> — 3804 Waco Rd • <a target="_blank" href="https://iscrapapp.com/yards/us-missouri-columbia-new-world-recycling-columbia/pricing/">iScrap page</a></li>
+        <li><strong>K&M Auto Salvage</strong> — 4901 N Wyatt Ln • https://kandmautosalvage.com/Website</a></li>
+        <li><strong>Algiere Salvage</strong> — 1545 Old US‑40</li>
+        <li><strong>Fusselman Salvage (Moberly)</strong> — 1201 US‑24 • <a target="_blank" href="https://www.fusselmetals.com/">Website</a></li>
+      </ul>
+      <div class="mini">Call ahead for current prices; add your favorite yard price under each item card.</div>
+    </div>
+  </div>
+
+  <p class="mini">Prices vary by grade, cleanliness, and volume. Store your local payouts using “Set My Local Price”.</p>
+</main>
+
+<footer>
+  <div>© 2026 Scrap Quick Reference • Offline enabled</div>
+  <div class="mini">This tool is for quick estimates. Confirm live prices with your yard before hauling.</div>
+</footer>
+
+<script>
+/* --- Simple store --- */
+const storeKey = 'scrapQuickRef.v2';
+const userData = JSON.parse(localStorage.getItem(storeKey) || '{}');
+
+const items = [
+  { id:'cu_bb', name:'#1 Bare Bright Copper', category:'Copper', unit:'lb',
+    national:{ value:4.23, label:'iScrap national avg' },
+    links:[{text:'Check iScrap copper', href:'https://iscrapapp.com/'}]
+  },
+  { id:'cu_tube1', name:'#1 Copper Tubing', category:'Copper', unit:'lb',
+    national:{ value:3.92, label:'iScrap national avg' },
+    links:[{text:'iScrap prices', href:'https://iscrapapp.com/'}]
+  },
+  { id:'br_yellow', name:'Yellow Brass', category:'Brass', unit:'lb',
+    national:{ value:2.70, label:'MO avg (ScrapMonster)'},
+    links:[{text:'MO yard averages', href:'https://www.scrapmonster.com/scrap-yards/prices/missouri/state/3390'}]
+  },
+  { id:'br_red', name:'Red Brass', category:'Brass', unit:'lb',
+    national:{ value:3.20, label:'MO avg (ScrapMonster)'},
+    links:[{text:'MO yard averages', href:'https://www.scrapmonster.com/scrap-yards/prices/missouri/state/3390'}]
+  },
+  { id:'al_ubc', name:'Aluminum Cans (UBC)', category:'Aluminum', unit:'lb',
+    national:{ value:0.75, label:'MO avg (ScrapMonster)' },
+    links:[{text:'MO yard averages', href:'https://www.scrapmonster.com/scrap-yards/prices/missouri/state/3390'}]
+  },
+  { id:'al_sheet', name:'Sheet Aluminum', category:'Aluminum', unit:'lb',
+    national:{ value:0.52, label:'US reference' },
+    links:[{text:'ScrapMonster aluminum', href:'https://www.scrapmonster.com/scrap-prices'}]
+  },
+  { id:'al_cast', name:'Cast Aluminum', category:'Aluminum', unit:'lb',
+    national:{ value:0.44, label:'US reference' },
+    links:[{text:'Calculator reference', href:'https://scrapmetalmonster.com/scrap-metal-calculator'}]
+  },
+  { id:'ss_304', name:'Stainless 304', category:'Stainless', unit:'lb',
+    national:{ value:0.40, label:'Typical paid range' },
+    links:[{text:'Yard averages (NE example)', href:'https://www.scrapmonster.com/scrap-yards/prices/nebraska/state/3392'}]
+  },
+  { id:'pb_batt', name:'Lead Auto Batteries', category:'Lead', unit:'lb',
+    national:{ value:0.22, label:'KC example (Langley)' },
+    links:[{text:'Langley KC price sheet', href:'https://langleyrecyclingkc.com/price-sheet/'}]
+  },
+  { id:'fe_shred_mo', name:'Shredded Steel (MO examples)', category:'Ferrous', unit:'ton',
+    localMORange:{ min:135, max:165, label:'Cape Girardeau & Lewistown' },
+    links:[
+      {text:'Cape Metal Recyclers rates', href:'https://capemetalrecyclers.com/rates/'},
+      {text:'Skirvin Scrap (Lewistown) rates', href:'https://skirvinscrapmetalrecycling.com/'}
+    ]
+  },
+  { id:'fe_hms1', name:'#1 HMS (National Avg)', category:'Ferrous', unit:'ton',
+    national:{ value:341.83, label:'iScrap national avg' },
+    links:[{text:'iScrap steel prices', href:'https://iscrapapp.com/'}]
+  },
+  { id:'fe_shred_us', name:'Shredded Scrap (US Index)', category:'Ferrous', unit:'ton',
+    national:{ value:451, label:'RMDAS (Mar 2026)' },
+    links:[{text:'RMDAS monthly index', href:'https://www.recyclingtoday.com/rmdas/'}]
+  },
+  { id:'cat_converters', name:'Catalytic Converters (quote)', category:'Precious', unit:'each',
+    note:'Get live quotes; prices vary by model & PGM content.',
+    links:[{text:'Request quote (RRCats via iScrap)', href:'https://apps.apple.com/us/app/iscrap-national-scrap-prices/id659591706'}]
+  }
+];
+
+const unitEl = document.getElementById('unit');
+const locEl = document.getElementById('location');
+const searchEl = document.getElementById('search');
+const cardsEl = document.getElementById('cards');
+const resetBtn = document.getElementById('reset');
+
+unitEl.value = userData.unit || 'lb';
+locEl.value = userData.loc || 'MO';
+searchEl.value = userData.search || '';
+
+unitEl.addEventListener('change', () => { userData.unit = unitEl.value; localStorage.setItem(storeKey, JSON.stringify(userData)); render(); });
+locEl.addEventListener('change', () => { userData.loc = locEl.value; localStorage.setItem(storeKey, JSON.stringify(userData)); render(); });
+searchEl.addEventListener('input', () => { userData.search = searchEl.value; localStorage.setItem(storeKey, JSON.stringify(userData)); render(); });
+resetBtn.addEventListener('click', () => { delete userData.custom; localStorage.setItem(storeKey, JSON.stringify(userData)); render(); });
+
+function toUnit(val, fromUnit, toUnit) {
+  if (val == null) return null;
+  if (fromUnit === toUnit) return val;
+  // 1 ton = 2000 lb
+  if (fromUnit === 'lb' && toUnit === 'ton') return val * 2000;
+  if (fromUnit === 'ton' && toUnit === 'lb') return val / 2000;
+  return val;
+}
+function fmt(val, unit) {
+  if (val == null || isNaN(val)) return '—';
+  const num = (unit === 'lb') ? val : Math.round(val);
+  return `$ ${num.toFixed(unit==='lb'?2:0)} / ${unit}`;
+}
+
+function isFav(id){ return userData.favs && userData.favs.includes(id); }
+function toggleFav(id){
+  userData.favs = userData.favs || [];
+  const i = userData.favs.indexOf(id);
+  if (i>=0) userData.favs.splice(i,1); else userData.favs.push(id);
+  localStorage.setItem(storeKey, JSON.stringify(userData));
+  render();
+}
+function setCustom(id){
+  const val = prompt('Enter your local price (number only). Use current units shown.');
+  if (!val) return;
+  userData.custom = userData.custom || {};
+  userData.custom[id] = parseFloat(val);
+  localStorage.setItem(storeKey, JSON.stringify(userData));
+  render();
+}
+
+function render(){
+  const unit = unitEl.value;
+  const loc = locEl.value;
+  const q = (searchEl.value||'').toLowerCase();
+
+  const filtered = items.filter(it => (it.name.toLowerCase().includes(q) || it.category.toLowerCase().includes(q)));
+  const favsFirst = [...filtered].sort((a,b)=> (isFav(b.id)?1:0) - (isFav(a.id)?1:0));
+  cardsEl.innerHTML = favsFirst.map(it=>{
+    const custom = userData.custom?.[it.id];
+    const customLine = custom!=null ? 
+      `<div class="row"><span class="label">My local:</span><span class="price">${fmt(custom, unit)}</span></div>` : '';
+
+    let natLine = '';
+    if (it.national?.value!=null) {
+      natLine = `<div class="row"><span class="label">${it.national.label}:</span>
+                 <span class="price">${fmt(toUnit(it.national.value, it.unit, unit), unit)}</span></div>`;
+    }
+
+    let moLine = '';
+    if (loc==='MO') {
+      if (it.localMORange) {
+        const min = toUnit(it.localMORange.min, it.unit, unit);
+        const max = toUnit(it.localMORange.max, it.unit, unit);
+        moLine = `<div class="row"><span class="label">Missouri examples:</span>
+                  <span class="price">${fmt(min, unit)} – ${fmt(max, unit)}</span></div>`;
+      } else if (it.localMO?.note) {
+        moLine = `<div class="row"><span class="label">Missouri:</span><span class="range">${it.localMO.note}</span></div>`;
+      }
+    }
+
+    const links = (it.links||[]).map(l=>`${l.href}${l.text}</a>`).join(' • ');
+
+    return `
+    <div class="card">
+      <div class="row">
+        <h2>${it.name}</h2>
+        <span class="fav" title="Favorite" onclick="toggleFav('${it.id}')">${isFav(it.id)?'★':'☆'}</span>
+      </div>
+      <div class="label">${it.category}</div>
+      ${natLine}
+      ${moLine}
+      ${customLine}
+      ${it.note ? `<div class="range">${it.note}</div>` : ''}
+      <div class="actions">
+        <button onclick="setCustom('${it.id}')">Set My Local Price</button>
+        <button onclick="alert('Switch $/lb ↔ $/ton using the dropdown at the top.');">Unit Help</button>
+      </div>
+      <div class="links">${links}</div>
+    </div>`;
+  }).join('');
+}
+
+/* --- Calculators --- */
+// AWG: lb per 1000 ft (bare copper)
+const awgWeights = { 6: 79.4, 8: 49.6, 10: 31.5, 12: 19.8, 14: 12.4, 16: 7.81, 18: 4.94 };
+
+document.getElementById('calcCu').addEventListener('click', ()=>{
+  const awg = document.getElementById('awg').value;
+  const len = parseFloat(document.getElementById('lenft').value||0);
+  const cnt = parseFloat(document.getElementById('count').value||1);
+  const price = parseFloat(document.getElementById('cuprice').value||0);
+  const lbsPer1000ft = awgWeights[awg];
+  if (!lbsPer1000ft) return document.getElementById('cuout').innerHTML = '<span style="color:#ff7676">Unknown AWG size.</span>';
+
+  const weightLb = (lbsPer1000ft/1000) * len * cnt;
+  const payout = weightLb * price;
+  document.getElementById('cuout').innerHTML =
+    `Approx weight: <strong>${weightLb.toFixed(2)} lb</strong> • Est. payout at $${price.toFixed(2)}/lb: <strong>$${payout.toFixed(2)}</strong>`;
+});
+
+document.getElementById('calcFe').addEventListener('click', ()=>{
+  const w = parseFloat(document.getElementById('ferrousW').value||0);
+  const u = document.getElementById('ferrousU').value;
+  const p = parseFloat(document.getElementById('ferrousP').value||0);
+  const tons = (u==='lb') ? (w/2000) : w;
+  const payout = tons * p;
+  document.getElementById('feout').innerHTML =
+    `Converted: <strong>${tons.toFixed(3)} ton</strong> • Est. payout: <strong>$${payout.toFixed(2)}</strong>`;
+});
+
+render();
+
+/* --- PWA service worker registration --- */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg failed', err));
+  });
+}
+</script>
 </body>
 </html>
