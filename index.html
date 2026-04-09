@@ -49,9 +49,10 @@
 
   <!-- Mini navigation -->
   <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
-    <button class="primary" onclick="showPage('home')" title="Home (Prices & Calculators)">🏠 Home</button>
+    <button class="primary" onclick="showPage('home')" title="Home">🏠 Home</button>
     <button onclick="showPage('guide')" title="Best Things to Scrap">📘 Best Things to Scrap</button>
-  </div>
+    <button onclick="showPage('checklist')" title="Prep Checklist">✔️ Prep Checklist</button>
+</div>
 </header>
 
 <main>
@@ -337,6 +338,44 @@
     <button onclick="showPage('home')" class="primary">← Back to Home</button>
   </div>
 </section>
+<!-- ============================================================
+     PREP CHECKLIST PAGE
+     ============================================================ -->
+<section id="checklist" style="display:none; padding:12px; max-width:980px; margin:0 auto;">
+
+  <div class="card" style="margin-bottom:12px">
+    <h2>✔️ Quick Prep Checklist</h2>
+    <div class="mini">
+      Select a scrap type below and follow the checklist to maximize payout.  
+      Checkmarks will be saved automatically (offline‑friendly).
+    </div>
+  </div>
+
+  <!-- Material selector -->
+  <div class="card" style="margin-bottom:12px">
+    <label class="mini"><strong>Choose material:</strong></label>
+    <select id="checklistSelect" style="margin-top:6px; width:100%;">
+      <option value="bareBright">Bare Bright Copper</option>
+      <option value="insulated">Insulated Copper Wire</option>
+      <option value="brass">Yellow/Red Brass</option>
+      <option value="motors">Electric Motors</option>
+      <option value="radiators">Radiators</option>
+      <option value="aluminum">Aluminum (Wheels / Sheet / Cast)</option>
+      <option value="preparedSteel">Prepared Steel</option>
+      <option value="shred">Shred / Tin</option>
+      <option value="batteries">Lead‑Acid Batteries</option>
+    </select>
+  </div>
+
+  <!-- Checklist container -->
+  <div id="checklistContainer"></div>
+
+  <div class="actions" style="margin-top:12px;">
+    <button class="primary" onclick="resetChecklist()">Reset Checklist</button>
+    <button onclick="showPage('home')">← Back to Home</button>
+  </div>
+
+</section>  
 <footer>
   <div>© 2026 Scrap Quick Reference • Offline enabled</div>
   <div class="mini">This tool is for quick estimates. Confirm live prices with your yard before hauling.</div>
