@@ -597,6 +597,135 @@ if ('serviceWorker' in navigator) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
+/* ================================
+   QUICK PREP CHECKLIST LOGIC
+================================ */
+
+// Checklist data
+const checklists = {
+  bareBright: [
+    "Remove ALL insulation",
+    "Remove ALL lugs, solder, fittings",
+    "Sort by gauge (keep thick wires together)",
+    "Keep copper bright (free of tarnish)",
+    "No steel, paint, or tape",
+    "Keep dry and clean (no corrosion)"
+  ],
+  insulated: [
+    "Sort THHN separate from Romex",
+    "Sort by gauge (high % copper together)",
+    "Remove obvious low‑grade mixed wire",
+    "Bundle neatly in coils",
+    "Strip ONLY if profitable (call yard)"
+  ],
+  brass: [
+    "Remove steel screws / inserts",
+    "Remove rubber washers / plastic parts",
+    "Separate yellow vs red brass",
+    "Remove valve stems if possible",
+    "Keep mixed metal pieces in 'dirty brass'"
+  ],
+  motors: [
+    "Remove attached plastic housings",
+    "Remove steel brackets if easy",
+    "Separate copper vs aluminum wound motors",
+    "Drain any oil",
+    "Sort motor size separately"
+  ],
+  radiators: [
+    "Drain ALL fluids",
+    "Remove steel brackets/fans",
+    "Sort Cu/Brass, Al/Cu, and Aluminum separately",
+    "Keep cores intact if required by yard"
+  ],
+  aluminum: [
+    "Separate wheels, sheet, cast, extrusion",
+    "Remove steel bolts, valves, wheel weights",
+    "Keep chrome‑clad separate",
+    "Remove heavy contamination"
+  ],
+  preparedSteel: [
+    "Cut to yard's size requirements",
+    "Remove major non‑metal parts",
+    "Sort heavy melt vs P&S vs light iron",
+    "Bundle or stack neatly"
+  ],
+  shred: [
+    "Drain fluids from appliances",
+    "Remove large non‑metal parts",
+    "Sort electronics separately",
+    "Remove batteries, oils, and hazardous items"
+  ],
+  batteries: [
+    "Keep upright",
+    "Do NOT crack open batteries",
+    "Sort auto vs deep‑cycle if required",
+    "Keep terminals accessible",
+    "Transport safely per local rules"
+  ]
+};
+
+// Restore saved checklist state
+function loadChecklistState(key) {
+  return JSON.parse(localStorage.getItem("chk_" + key) || "[]");
+}
+
+// Save checklist state
+function saveChecklistState(key, state) {
+  localStorage.setItem("chk_" + key, JSON.stringify(state));
+}
+
+// Render checklist
+function renderChecklist() {
+  const mat = document.getElementById("checklistSelect").value;
+  const container = document.getElementById("checklistContainer");
+  const items = checklists[mat];
+  const saved = loadChecklistState(mat);
+
+  let html = '<div class="card"><h3 class="mini">Prep Steps</h3>';
+
+  items.forEach((item, i) => {
+    const checked = saved.includes(i) ? "checked" : "";
+    html += `
+      <label style="display:flex; align-items:center; margin:6px 0;">
+        <input type="checkbox" style="margin-right:8px;" 
+               onchange="toggleChecklistItem('${mat}', ${i})" ${checked}>
+        ${item}
+      </label>
+    `;
+  });
+
+  html += "</div>";
+  container.innerHTML = html;
+}
+
+// Toggle checklist item
+function toggleChecklistItem(mat, index) {
+  let saved = loadChecklistState(mat);
+  if (saved.includes(index)) {
+    saved = saved.filter(i => i !== index);
+  } else {
+    saved.push(index);
+  }
+  saveChecklistState(mat, saved);
+}
+
+// Reset checklist
+function resetChecklist() {
+  const mat = document.getElementById("checklistSelect").value;
+  localStorage.removeItem("chk_" + mat);
+  renderChecklist();
+}
+
+// Change checklist when dropdown changes
+document.getElementById("checklistSelect").addEventListener("change", renderChecklist);
+
+// Ensure checklist loads when page is opened
+function initChecklistIfNeeded() {
+  if (document.getElementById("checklist").style.display !== "none") {
+    renderChecklist();
+  }
+}  
 </script>
   
 </body>
