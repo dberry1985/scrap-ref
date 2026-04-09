@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <title>Scrap Quick Reference</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <linkifest.json
+  <!-- Correct manifest link -->
+  ./manifest.json
   <meta name="theme-color" content="#0b5fff" />
   <style>
     :root {
@@ -17,16 +18,16 @@
              position: sticky; top:0; z-index: 100; }
     h1 { margin:0; font-size: 1.25rem; }
     .sub { font-size: 0.85rem; color: #eaf2ff; }
-    main { padding: 12px; max-width: 980px; margin: 0 auto; }
+    main, section { padding: 12px; max-width: 980px; margin: 0 auto; }
     .controls { display:flex; gap:8px; flex-wrap:wrap; margin: 8px 0 16px; }
     select, input[type="text"], input[type="number"] {
       background: var(--card); color: var(--text); border: 1px solid #2a3342;
       padding: 8px; border-radius: 8px; min-width: 160px;
     }
-    .search { flex:1; }
+    .search { flex:1; min-width: 220px; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: 12px; }
     .card { background: var(--card); border: 1px solid #1f2735; border-radius: 12px; padding: 12px; }
-    .card h2 { margin: 0 0 6px; font-size: 1.05rem; }
+    .card h2, .card h3 { margin: 0 0 6px; }
     .row { display:flex; justify-content: space-between; align-items: baseline; gap: 8px; }
     .label { color: var(--muted); font-size: 0.85rem; }
     .price { font-weight: 700; }
@@ -40,6 +41,18 @@
     .fav { color: gold; cursor: pointer; }
     .mini { font-size: 0.85rem; color: var(--muted); }
     footer { padding: 16px; color: var(--muted); text-align: center; }
+    details.card > summary { cursor: pointer; font-weight: 600; }
+    details.card > summary::-webkit-details-marker { display:none; }
+    details.card > summary::after {
+      content: " ▸";
+      color: #9fb0ca;
+      font-weight: 400;
+    }
+    details[open].card > summary::after {
+      content: " ▾";
+    }
+    /* Inline “pill” links style */
+    .links a { color: #9dc1ff; text-decoration: none; margin-right: 10px; }
   </style>
 </head>
 <body>
@@ -52,10 +65,13 @@
     <button class="primary" onclick="showPage('home')" title="Home">🏠 Home</button>
     <button onclick="showPage('guide')" title="Best Things to Scrap">📘 Best Things to Scrap</button>
     <button onclick="showPage('checklist')" title="Prep Checklist">✔️ Prep Checklist</button>
-</div>
+  </div>
 </header>
 
-<main>
+<!-- =========================================
+     HOME PAGE (Prices + Calculators + Links)
+========================================= -->
+<main id="home">
   <!-- Controls -->
   <div class="controls">
     <input id="search" class="search" type="text" placeholder="Search items (e.g., copper, batteries, shred)"/>
@@ -70,18 +86,20 @@
     <button class="primary" id="reset">Reset My Local Prices</button>
   </div>
 
-  <!-- Reference Cards -->
+  <!-- Reference Cards (rendered via JS) -->
   <div class="grid" id="cards"></div>
 
   <!-- Calculators & Tools -->
   <div class="grid" style="margin-top:12px">
+    <!-- Copper Wire Weight & Payout -->
     <div class="card">
       <h2>🧮 Copper Wire → Weight & Payout</h2>
       <div class="mini">Uses AWG lb/1000 ft (bare copper). Set your local #1 bare bright price to estimate payout.</div>
       <div class="actions">
         <label>AWG:
           <select id="awg">
-            <option>6</option><option>8</option><option>10</option><option selected>12</option><option>14</option><option>16</option><option>18</option>
+            <option>6</option><option>8</option><option>10</option><option selected>12</option>
+            <option>14</option><option>16</option><option>18</option>
           </select>
         </label>
         <label>Length (ft): <input id="lenft" type="number" value="100" /></label>
@@ -92,6 +110,7 @@
       <div id="cuout" class="range"></div>
     </div>
 
+    <!-- Ferrous Converter -->
     <div class="card">
       <h2>⚖️ Ferrous Converter & Estimator</h2>
       <div class="actions">
@@ -106,9 +125,10 @@
       <div class="mini">Tip: Missouri shredded steel examples seen ~ $135–$165/ton. Verify live rates with local yards.</div>
     </div>
 
+    <!-- Live price links -->
     <div class="card">
       <h2>🔁 One‑tap Refresh (Live Price Links)</h2>
-      <div class="actions">
+      <div class="links">
         <a href="https://iscrapapp.com/" target="_blank">iScrap — National Prices</a>
         <a href="https://www.recyclingtoday.com/rmdas/" target="_blank">RMDAS — Shred Index</a>
         <a href="https://www.scrapmonster.com/scrap-prices" target="_blank">ScrapMonster — US & Global</a>
@@ -118,14 +138,15 @@
       <div class="mini">Open these, check live prices, then update “My Local Price” on the cards.</div>
     </div>
 
+    <!-- Yard shortcuts -->
     <div class="card">
       <h2>📍 Columbia, MO — Yard Shortcuts</h2>
       <ul class="mini">
-        <li><strong>Advantage Metals Recycling</strong> — 705 N Proctor Dr • <a target="_blank" href="https://advantagerecycling.com/columbia-mo/">Website</a></li>
-        <li><strong>New World Recycling</strong> — 3804 Waco Rd • <a target="_blank" href="https://iscrapapp.com/yards/us-missouri-columbia-new-world-recycling-columbia/pricing/">iScrap page</a></li>
-        <li><strong>K&M Auto Salvage</strong> — 4901 N Wyatt Ln • https://kandmautosalvage.com/Website</a></li>
-        <li><strong>Algiere Salvage</strong> — 1545 Old US‑40</li>
-        <li><strong>Fusselman Salvage (Moberly)</strong> — 1201 US‑24 • <a target="_blank" href="https://www.fusselmetals.com/">Website</a></li>
+        <li><strong>Advantage Metals Recycling</strong> — 705 N Proctor Dr • <a target="_blank" href="https://advantagerecycling.com/columbia-mo/">Website</a> • tel:+15734421771Call</a></li>
+        <li><strong>New World Recycling</strong> — 3804 Waco Rd • <a target="_blank" href="https://iscrapapp.com/yards/us-missouri-columbia-new-world-recycling-columbia/pricing/">iScrap page</a> • tel:+15738142826Call</a></li>
+        <li><strong>K&M Auto Salvage</strong> — 4901 N Wyatt Ln • <a target="_blank" href="https://kandmautosalvage.com/">Website</a> • <>
+        <li><strong>Algiere Salvage</strong> — 1545 Old US‑40 • tel:+15734744000Call</a></li>
+        <li><strong>Fusselman Salvage (Moberly)</strong> — 1201 US‑24 • <a target="_blank" href="https://www.fusselmetals.com/">Website</a> • <a href602636811Call</a></li>
       </ul>
       <div class="mini">Call ahead for current prices; add your favorite yard price under each item card.</div>
     </div>
@@ -133,204 +154,122 @@
 
   <p class="mini">Prices vary by grade, cleanliness, and volume. Store your local payouts using “Set My Local Price”.</p>
 </main>
+
 <!-- =========================================
      GUIDE PAGE: Best Things to Scrap (Accordion)
-     ========================================= -->
-<section id="guide" style="display:none; padding: 12px; max-width: 980px; margin: 0 auto;">
+========================================= -->
+<section id="guide" style="display:none;">
   <div class="card" style="margin-bottom:12px">
     <h2>📘 Best Things to Scrap — How to Prep for Max Money</h2>
     <div class="mini">
       **No images** (per your preference). Tap a panel to expand.  
       <br>
-      <strong>General rules:</strong> Separate metals by grade, remove non‑metal attachments, keep everything as <em>clean</em> and <em>sorted</em> as possible, and always call local yards to confirm current rates & policies. Never scrap items you don’t own; follow all applicable laws and yard safety instructions.
+      <strong>General rules:</strong> Separate metals by grade, remove non‑metal attachments, keep everything as <em>clean</em> and <em>sorted</em> as possible, and always call local yards to confirm current rates & policies. Follow laws and yard safety instructions.
     </div>
   </div>
 
-  <!-- STYLE NOTE: We use native <details> for a clean accordion without images or extra JS. -->
-
-  <!-- 1) Bare Bright Copper -->
-  <details class="card">
-    <summary><strong>🔥 #1 Bare Bright Copper</strong> — highest-paying clean copper</summary>
+  <!-- Use native <details> for accordion panels -->
+  <details class="card"><summary><strong>🔥 #1 Bare Bright Copper</strong> — highest-paying clean copper</summary>
     <div class="mini">
-      <p><strong>What it is:</strong> Clean, uncoated, unalloyed copper wire (usually ≥16 AWG), no insulation, no solder, no corrosion.</p>
-      <p><strong>Where to find:</strong> Electrical upgrades, demo jobs, old service panels, large gauge wire from appliances/AC installs.</p>
-      <p><strong>How to prep:</strong></p>
-      <ul>
-        <li>Strip insulation completely (use a safe wire stripper). Keep the copper bright and untarnished.</li>
-        <li>Remove all attachments (lugs, soldered ends, tape). Keep only clean copper in this bin.</li>
-        <li>Sort by thickness—keep #1 bare bright separate from thinner mixed pieces.</li>
-      </ul>
-      <p><strong>Max payout tips:</strong> Keep it dry, coil neatly, avoid oxidation; yards pay **#1** only if it’s truly clean.</p>
-      <p><strong>Common downgrades:</strong> Any residual insulation, paint/varnish, heavy tarnish → paid as lower grade (#2 or mixed).</p>
-      <p><strong>Tools:</strong> Quality wire stripper, utility knife, side cutters, small bin for lugs/junk.</p>
-      <p><strong>Safety:</strong> Wear gloves/eye protection; unplug power sources; never strip energized wire.</p>
+      <p><strong>What it is:</strong> Clean, uncoated, unalloyed copper wire (≥16 AWG), no insulation, no solder, no corrosion.</p>
+      <p><strong>Where to find:</strong> Electrical upgrades, demo jobs, large gauge wire from appliances/AC installs.</p>
+      <p><strong>Prep:</strong> Strip insulation; remove lugs/solder/fittings; sort by gauge; keep bright and dry.</p>
+      <p><strong>Downgrades:</strong> Residual insulation, paint, heavy tarnish → #2/mixed.</p>
+      <p><strong>Safety:</strong> Gloves/eye protection; never strip energized wire.</p>
     </div>
   </details>
 
-  <!-- 2) #1 Copper Wire & Tubing -->
-  <details class="card">
-    <summary><strong>#1 Copper Wire & Tubing</strong> — clean copper pipes & large wire</summary>
+  <details class="card"><summary><strong>#1 Copper Wire & Tubing</strong> — clean copper pipes & large wire</summary>
     <div class="mini">
-      <p><strong>What it is:</strong> Clean copper pipe/tubing free of solder/paint; large clean copper wire (still insulated → downgrade).</p>
-      <p><strong>Where to find:</strong> Plumbing renovations, HVAC line sets (after removing fittings), water heater swaps.</p>
-      <p><strong>How to prep:</strong></p>
-      <ul>
-        <li>Cut off fittings/valves; remove paint/solder where practical.</li>
-        <li>Drain and dry; avoid mixed loads (keep brass fittings separate).</li>
-      </ul>
-      <p><strong>Max payout tips:</strong> Deliver as **clean copper**—no steel screws, no soldered joints if possible.</p>
-      <p><strong>Common downgrades:</strong> Soldered pipe, paint, mixed metal attachments, heavy corrosion.</p>
+      <p><strong>Prep:</strong> Cut off fittings/valves; remove paint/solder where practical; keep only clean copper.</p>
+      <p><strong>Downgrades:</strong> Soldered pipe, paint, mixed metals, significant corrosion.</p>
     </div>
   </details>
 
-  <!-- 3) Insulated Copper Wire (Building/THHN, Romex) -->
-  <details class="card">
-    <summary><strong>Insulated Copper Wire</strong> (THHN/Romex) — separate by type for better rates</summary>
+  <details class="card"><summary><strong>Insulated Copper Wire</strong> (THHN/Romex) — sort by type/gauge</summary>
     <div class="mini">
-      <p><strong>What it is:</strong> Building wire & household cable with insulation; payout depends on copper %.</p>
-      <p><strong>Where to find:</strong> Electrical remodels, demo jobs, contractor offcuts.</p>
-      <p><strong>How to prep:</strong></p>
-      <ul>
-        <li>Sort by type/gauge (THHN single conductors vs. Romex multi‑conductor).</li>
-        <li>Bundle neatly; <em>don’t</em> mix aluminum or low‑grade low‑copper wire with high‑grade bundles.</li>
-        <li>Strip only if it clearly pays more vs. time (call your yard for % thresholds).</li>
-      </ul>
-      <p><strong>Max payout tips:</strong> Higher copper content yields better pricing; keep loads consistent by type.</p>
-      <p><strong>Common downgrades:</strong> Mixed low‑grade wire, excessive plastics, steel armor left attached.</p>
+      <p><strong>Prep:</strong> Sort THHN single conductors vs. Romex; bundle neatly; strip only if profitable.</p>
+      <p><strong>Tip:</strong> Higher copper % gets better pricing.</p>
     </div>
   </details>
 
-  <!-- 4) Yellow/Red Brass -->
-  <details class="card">
-    <summary><strong>Brass (Yellow & Red)</strong> — high value if clean & separated</summary>
+  <details class="card"><summary><strong>Brass (Yellow & Red)</strong> — high value if clean & separated</summary>
     <div class="mini">
-      <p><strong>What it is:</strong> Yellow (cartridge) brass & red brass (valves/fittings); value varies by alloy.</p>
-      <p><strong>Where to find:</strong> Plumbing hardware, hose bibs, faucet bodies, radiator tanks (older units).</p>
-      <p><strong>How to prep:</strong></p>
-      <ul>
-        <li>Remove steel screws, plastic inserts, rubber seats.</li>
-        <li>Sort yellow vs. red brass when you can (yards pay different rates).</li>
-      </ul>
-      <p><strong>Max payout tips:</strong> Deliver as clean solids; keep “dirty brass” (with steel) in a separate bin.</p>
-      <p><strong>Common downgrades:</strong> Mixed metals attached, lacquer/paint, trapped non‑metal parts.</p>
+      <p><strong>Prep:</strong> Remove steel screws/inserts, rubber/plastic; separate yellow vs red brass.</p>
+      <p><strong>Tip:</strong> Keep “dirty brass” (with steel) separate.</p>
     </div>
   </details>
 
-  <!-- 5) Electric Motors (Copper wound) -->
-  <details class="card">
-    <summary><strong>Electric Motors</strong> (copper wound) — steady payouts, better if disassembled</summary>
+  <details class="card"><summary><strong>Electric Motors</strong> (copper wound)</summary>
     <div class="mini">
-      <p><strong>Where to find:</strong> HVAC compressors, power tools, appliances, treadmill motors.</p>
-      <p><strong>How to prep:</strong></p>
-      <ul>
-        <li>Keep motors intact for quick sale; or tear down: remove steel cases, extract copper windings.</li>
-        <li>Separate aluminum vs. copper windings (copper pays more).</li>
-      </ul>
-      <p><strong>Max payout tips:</strong> Large copper‑wound motors pay the best; staged bins (steel, copper, aluminum) speed up yard grading.</p>
-      <p><strong>Common downgrades:</strong> Mixed metals left attached, contamination (oil), aluminum windings assumed as lower value.</p>
-      <p><strong>Safety:</strong> Unplug, discharge capacitors, wear gloves/eye protection.</p>
+      <p><strong>Prep:</strong> Sell intact or tear down (remove steel cases, extract copper windings). Separate copper vs aluminum.</p>
+      <p><strong>Safety:</strong> Unplug, discharge capacitors, PPE.</p>
     </div>
   </details>
 
-  <!-- 6) Transformers -->
-  <details class="card">
-    <summary><strong>Transformers</strong> — copper core units beat aluminum</summary>
+  <details class="card"><summary><strong>Transformers</strong> — copper core units beat aluminum</summary>
     <div class="mini">
-      <p><strong>Where to find:</strong> Old HVAC, UPS units, industrial panels.</p>
-      <p><strong>Prep:</strong> Identify copper vs. aluminum windings; keep oil‑filled units sealed & disclose to yard.</p>
-      <p><strong>Max payout tips:</strong> Separate copper‑core from aluminum‑core; avoid mixed loads.</p>
+      <p><strong>Prep:</strong> Identify copper vs aluminum windings; keep oil‑filled sealed & disclose.</p>
     </div>
   </details>
 
-  <!-- 7) Aluminum Wheels -->
-  <details class="card">
-    <summary><strong>Aluminum Wheels</strong> — clean, no tire, no weights</summary>
+  <details class="card"><summary><strong>Aluminum Wheels</strong> — clean, no tire, no weights</summary>
     <div class="mini">
-      <p><strong>Prep:</strong> Remove tires, valve stems, wheel weights; separate chrome‑clad vs. clean cast.</p>
-      <p><strong>Max payout tips:</strong> “Clean” wheels (no steel/lead) pay best; chrome‑clad usually pays less—keep separate.</p>
+      <p><strong>Prep:</strong> Remove tires/valves/weights; separate chrome‑clad vs clean cast.</p>
     </div>
   </details>
 
-  <!-- 8) Radiators (Cu/Brass, Al/Cu, Aluminum) -->
-  <details class="card">
-    <summary><strong>Radiators</strong> — sort by metal: copper/brass, aluminum/copper, or all‑aluminum</summary>
+  <details class="card"><summary><strong>Radiators</strong> — Cu/Brass, Al/Cu, or all‑Aluminum</summary>
     <div class="mini">
       <p><strong>Prep:</strong> Drain fluids; remove steel brackets/fans; sort by type.</p>
-      <p><strong>Max payout tips:</strong> Cu/Brass radiators pay best; Al/Cu next; all‑aluminum lower. Keep each type in its own bin.</p>
     </div>
   </details>
 
-  <!-- 9) Stainless 304 -->
-  <details class="card">
-    <summary><strong>Stainless 304</strong> — decent value if it’s really stainless</summary>
+  <details class="card"><summary><strong>Stainless 304</strong></summary>
     <div class="mini">
-      <p><strong>Where to find:</strong> Appliances, food/medical equipment, sinks.</p>
-      <p><strong>Prep:</strong> Use a magnet (304 is non‑magnetic or weak); remove steel fasteners; avoid painted/laminated pieces.</p>
+      <p><strong>Prep:</strong> Magnet test; remove steel fasteners; avoid painted/laminated pieces.</p>
     </div>
   </details>
 
-  <!-- 10) Lead-Acid Batteries -->
-  <details class="card">
-    <summary><strong>Lead‑acid Batteries</strong> — steady pay; handle safely</summary>
+  <details class="card"><summary><strong>Lead‑acid Batteries</strong></summary>
     <div class="mini">
-      <p><strong>Prep:</strong> Keep upright; don’t crack open; avoid leaks; sort auto vs. industrial where required.</p>
-      <p><strong>Safety:</strong> Acid hazard—gloves/eye protection; transport per local rules; many yards pay by the unit or lb.</p>
+      <p><strong>Prep:</strong> Keep upright; don’t crack open; sort auto vs industrial where needed.</p>
+      <p><strong>Safety:</strong> Acid hazard; PPE; transport per local rules.</p>
     </div>
   </details>
 
-  <!-- 11) Catalytic Converters -->
-  <details class="card">
-    <summary><strong>Catalytic Converters</strong> — PGM content varies widely; get quotes</summary>
+  <details class="card"><summary><strong>Catalytic Converters</strong></summary>
     <div class="mini">
-      <p><strong>Prep & policy:</strong> Only sell converters you legally own (from vehicles you own/parted). Prices depend on model/year & precious metals.</p>
-      <p><strong>Tip:</strong> Use your existing app link for converter quotes (from the Copper page).</p>
+      <p><strong>Prep:</strong> Only converters you legally own; pricing varies by model/year and PGM content. Use quote services.</p>
     </div>
   </details>
 
-  <!-- 12) Appliances / White Goods (Steel) -->
-  <details class="card">
-    <summary><strong>Appliances / White Goods</strong> — mostly steel (good for volume)</summary>
+  <details class="card"><summary><strong>Appliances / White Goods</strong> (steel)</summary>
     <div class="mini">
-      <p><strong>Prep:</strong> Remove non‑metal parts; drain fluids; separate motors (sell separately); prepared sizes may pay more vs. shred/tin.</p>
+      <p><strong>Prep:</strong> Remove non‑metal parts; drain fluids; pull motors to sell separately; cut to “prepared” sizes if worth it.</p>
     </div>
   </details>
 
-  <!-- 13) Prepared Steel / P&S vs. Shred -->
-  <details class="card">
-    <summary><strong>Prepared Steel (P&amp;S) vs. Shred/Tin</strong> — know your yard’s cut sizes</summary>
+  <details class="card"><summary><strong>Prepared Steel (P&amp;S) vs Shred/Tin</strong></summary>
     <div class="mini">
-      <p><strong>Prep:</strong> Cut to yard‑specified dimensions for “prepared” pricing; keep light iron/shred separate.</p>
-      <p><strong>Max payout tips:</strong> Prepared usually beats shred; avoid mixed loads; remove non‑metal.</p>
+      <p><strong>Prep:</strong> Cut to yard size; separate heavy melt vs P&S vs light iron; remove non‑metal.</p>
     </div>
   </details>
 
-  <!-- 14) Tungsten Carbide (bonus tip) -->
-  <details class="card">
-    <summary><strong>Tungsten Carbide (tooling)</strong> — high value, niche buyer</summary>
+  <details class="card"><summary><strong>Tungsten Carbide</strong> (bonus)</summary>
     <div class="mini">
-      <p><strong>Where to find:</strong> Machine shops, drill bits, end mills.</p>
-      <p><strong>Prep:</strong> Keep carbide separate; verify your yard buys it or find specialty buyers.</p>
+      <p><strong>Prep:</strong> Keep carbide tooling separate; verify yard buys it or find specialty buyers.</p>
     </div>
   </details>
 
-  <!-- 15) Aluminum Cans (UBC) -->
-  <details class="card">
-    <summary><strong>Aluminum Cans (UBC)</strong> — lightweight, consistent</summary>
-    <div class="mini">
-      <p><strong>Prep:</strong> Keep clean & dry; bag or bin; no steel/lead attachments; crushed is okay if yard accepts.</p>
-      <p><strong>Tip:</strong> Volume matters—check if your yard pays more for bales or large loads.</p>
-    </div>
-  </details>
-
-  <!-- Quick Reference -->
   <div class="card" style="margin-top:12px">
     <h3>💡 Quick Best‑Practices</h3>
     <ul class="mini">
-      <li>Separate by metal and grade. Mixing high/low grades is the #1 reason for downgrades.</li>
-      <li>Remove steel, plastic, rubber, paint, solder wherever practical.</li>
-      <li>Bundle neatly; keep loads consistent (e.g., all THHN together, all Romex together).</li>
-      <li>Call 2–3 local yards for current prices; policies differ by yard & day.</li>
-      <li>Follow yard rules, wear PPE, and obey all local/state regulations.</li>
+      <li>Separate by metal and grade; mixing high/low grades causes downgrades.</li>
+      <li>Remove steel/plastic/rubber/paint/solder where practical.</li>
+      <li>Bundle neatly; keep loads consistent by type (e.g., all THHN together).</li>
+      <li>Call 2–3 local yards for current prices; policies differ.</li>
+      <li>Follow yard rules, wear PPE, obey local/state regulations.</li>
     </ul>
   </div>
 
@@ -338,16 +277,16 @@
     <button onclick="showPage('home')" class="primary">← Back to Home</button>
   </div>
 </section>
-<!-- ============================================================
-     PREP CHECKLIST PAGE
-     ============================================================ -->
-<section id="checklist" style="display:none; padding:12px; max-width:980px; margin:0 auto;">
 
+<!-- =========================================
+     PREP CHECKLIST PAGE
+========================================= -->
+<section id="checklist" style="display:none;">
   <div class="card" style="margin-bottom:12px">
     <h2>✔️ Quick Prep Checklist</h2>
     <div class="mini">
       Select a scrap type below and follow the checklist to maximize payout.  
-      Checkmarks will be saved automatically (offline‑friendly).
+      Checkmarks save automatically (offline‑friendly).
     </div>
   </div>
 
@@ -374,19 +313,25 @@
     <button class="primary" onclick="resetChecklist()">Reset Checklist</button>
     <button onclick="showPage('home')">← Back to Home</button>
   </div>
+</section>
 
-</section>  
 <footer>
   <div>© 2026 Scrap Quick Reference • Offline enabled</div>
   <div class="mini">This tool is for quick estimates. Confirm live prices with your yard before hauling.</div>
 </footer>
 
 <script>
-/* --- Simple store --- */
-const storeKey = 'scrapQuickRef.v2';
+/* =========================================
+   Storage & global state
+========================================= */
+const storeKey = 'scrapQuickRef.v3';
 const userData = JSON.parse(localStorage.getItem(storeKey) || '{}');
 
+/* =========================================
+   Data: Price items (Home cards)
+========================================= */
 const items = [
+  // COPPER
   { id:'cu_bb', name:'#1 Bare Bright Copper', category:'Copper', unit:'lb',
     national:{ value:4.23, label:'iScrap national avg' },
     links:[{text:'Check iScrap copper', href:'https://iscrapapp.com/'}]
@@ -395,6 +340,8 @@ const items = [
     national:{ value:3.92, label:'iScrap national avg' },
     links:[{text:'iScrap prices', href:'https://iscrapapp.com/'}]
   },
+
+  // BRASS
   { id:'br_yellow', name:'Yellow Brass', category:'Brass', unit:'lb',
     national:{ value:2.70, label:'MO avg (ScrapMonster)'},
     links:[{text:'MO yard averages', href:'https://www.scrapmonster.com/scrap-yards/prices/missouri/state/3390'}]
@@ -403,6 +350,8 @@ const items = [
     national:{ value:3.20, label:'MO avg (ScrapMonster)'},
     links:[{text:'MO yard averages', href:'https://www.scrapmonster.com/scrap-yards/prices/missouri/state/3390'}]
   },
+
+  // ALUMINUM
   { id:'al_ubc', name:'Aluminum Cans (UBC)', category:'Aluminum', unit:'lb',
     national:{ value:0.75, label:'MO avg (ScrapMonster)' },
     links:[{text:'MO yard averages', href:'https://www.scrapmonster.com/scrap-yards/prices/missouri/state/3390'}]
@@ -415,14 +364,20 @@ const items = [
     national:{ value:0.44, label:'US reference' },
     links:[{text:'Calculator reference', href:'https://scrapmetalmonster.com/scrap-metal-calculator'}]
   },
+
+  // STAINLESS
   { id:'ss_304', name:'Stainless 304', category:'Stainless', unit:'lb',
     national:{ value:0.40, label:'Typical paid range' },
     links:[{text:'Yard averages (NE example)', href:'https://www.scrapmonster.com/scrap-yards/prices/nebraska/state/3392'}]
   },
+
+  // LEAD
   { id:'pb_batt', name:'Lead Auto Batteries', category:'Lead', unit:'lb',
     national:{ value:0.22, label:'KC example (Langley)' },
     links:[{text:'Langley KC price sheet', href:'https://langleyrecyclingkc.com/price-sheet/'}]
   },
+
+  // FERROUS
   { id:'fe_shred_mo', name:'Shredded Steel (MO examples)', category:'Ferrous', unit:'ton',
     localMORange:{ min:135, max:165, label:'Cape Girardeau & Lewistown' },
     links:[
@@ -438,12 +393,17 @@ const items = [
     national:{ value:451, label:'RMDAS (Mar 2026)' },
     links:[{text:'RMDAS monthly index', href:'https://www.recyclingtoday.com/rmdas/'}]
   },
+
+  // CATALYTIC (for quotes)
   { id:'cat_converters', name:'Catalytic Converters (quote)', category:'Precious', unit:'each',
     note:'Get live quotes; prices vary by model & PGM content.',
     links:[{text:'Request quote (RRCats via iScrap)', href:'https://apps.apple.com/us/app/iscrap-national-scrap-prices/id659591706'}]
   }
 ];
 
+/* =========================================
+   UI helpers & render logic
+========================================= */
 const unitEl = document.getElementById('unit');
 const locEl = document.getElementById('location');
 const searchEl = document.getElementById('search');
@@ -499,7 +459,7 @@ function render(){
   const favsFirst = [...filtered].sort((a,b)=> (isFav(b.id)?1:0) - (isFav(a.id)?1:0));
   cardsEl.innerHTML = favsFirst.map(it=>{
     const custom = userData.custom?.[it.id];
-    const customLine = custom!=null ? 
+    const customLine = custom!=null ?
       `<div class="row"><span class="label">My local:</span><span class="price">${fmt(custom, unit)}</span></div>` : '';
 
     let natLine = '';
@@ -525,7 +485,7 @@ function render(){
     return `
     <div class="card">
       <div class="row">
-        <h2>${it.name}</h2>
+        <h3>${it.name}</h3>
         <span class="fav" title="Favorite" onclick="toggleFav('${it.id}')">${isFav(it.id)?'★':'☆'}</span>
       </div>
       <div class="label">${it.category}</div>
@@ -542,9 +502,11 @@ function render(){
   }).join('');
 }
 
-/* --- Calculators --- */
-// AWG: lb per 1000 ft (bare copper)
-const awgWeights = { 6: 79.4, 8: 49.6, 10: 31.5, 12: 19.8, 14: 12.4, 16: 7.81, 18: 4.94 };
+/* =========================================
+   Calculators
+========================================= */
+// AWG lb per 1000 ft (bare copper)
+const awgWeights = { 6:79.4, 8:49.6, 10:31.5, 12:19.8, 14:12.4, 16:7.81, 18:4.94 };
 
 document.getElementById('calcCu').addEventListener('click', ()=>{
   const awg = document.getElementById('awg').value;
@@ -570,37 +532,32 @@ document.getElementById('calcFe').addEventListener('click', ()=>{
     `Converted: <strong>${tons.toFixed(3)} ton</strong> • Est. payout: <strong>$${payout.toFixed(2)}</strong>`;
 });
 
-render();
+/* =========================================
+   Page toggle: Home vs Guide vs Checklist
+========================================= */
+function showPage(which) {
+  const homeMain = document.getElementById('home');
+  const guideSec = document.getElementById('guide');
+  const checklistSec = document.getElementById('checklist');
 
-/* --- PWA service worker registration --- */
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg failed', err));
-  });
+  homeMain.style.display = 'none';
+  guideSec.style.display = 'none';
+  checklistSec.style.display = 'none';
+
+  if (which === 'guide') {
+    guideSec.style.display = 'block';
+  } else if (which === 'checklist') {
+    checklistSec.style.display = 'block';
+    initChecklistIfNeeded();
+  } else {
+    homeMain.style.display = 'block';
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-  // --- Page toggle: Home vs Guide ---
-  function showPage(which) {
-    const homeMain = document.querySelector('main');     // existing Home page
-    const guideSec = document.getElementById('guide');    // new Guide page/tab
-
-    if (!homeMain || !guideSec) return;
-
-    if (which === 'guide') {
-      homeMain.style.display = 'none';
-      guideSec.style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      guideSec.style.display = 'none';
-      homeMain.style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  }
-/* ================================
-   QUICK PREP CHECKLIST LOGIC
-================================ */
-
-// Checklist data
+/* =========================================
+   Quick Prep Checklist
+========================================= */
 const checklists = {
   bareBright: [
     "Remove ALL insulation",
@@ -664,17 +621,12 @@ const checklists = {
   ]
 };
 
-// Restore saved checklist state
 function loadChecklistState(key) {
   return JSON.parse(localStorage.getItem("chk_" + key) || "[]");
 }
-
-// Save checklist state
 function saveChecklistState(key, state) {
   localStorage.setItem("chk_" + key, JSON.stringify(state));
 }
-
-// Render checklist
 function renderChecklist() {
   const mat = document.getElementById("checklistSelect").value;
   const container = document.getElementById("checklistContainer");
@@ -682,50 +634,45 @@ function renderChecklist() {
   const saved = loadChecklistState(mat);
 
   let html = '<div class="card"><h3 class="mini">Prep Steps</h3>';
-
   items.forEach((item, i) => {
     const checked = saved.includes(i) ? "checked" : "";
     html += `
       <label style="display:flex; align-items:center; margin:6px 0;">
-        <input type="checkbox" style="margin-right:8px;" 
+        <input type="checkbox" style="margin-right:8px;"
                onchange="toggleChecklistItem('${mat}', ${i})" ${checked}>
         ${item}
       </label>
     `;
   });
-
   html += "</div>";
   container.innerHTML = html;
 }
-
-// Toggle checklist item
 function toggleChecklistItem(mat, index) {
   let saved = loadChecklistState(mat);
-  if (saved.includes(index)) {
-    saved = saved.filter(i => i !== index);
-  } else {
-    saved.push(index);
-  }
+  if (saved.includes(index)) saved = saved.filter(i => i !== index);
+  else saved.push(index);
   saveChecklistState(mat, saved);
 }
-
-// Reset checklist
 function resetChecklist() {
   const mat = document.getElementById("checklistSelect").value;
   localStorage.removeItem("chk_" + mat);
   renderChecklist();
 }
-
-// Change checklist when dropdown changes
 document.getElementById("checklistSelect").addEventListener("change", renderChecklist);
-
-// Ensure checklist loads when page is opened
 function initChecklistIfNeeded() {
-  if (document.getElementById("checklist").style.display !== "none") {
-    renderChecklist();
-  }
-}  
+  if (document.getElementById("checklist").style.display !== "none") renderChecklist();
+}
+
+/* =========================================
+   Render on load & Service Worker
+========================================= */
+render();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg failed', err));
+  });
+}
 </script>
-  
 </body>
 </html>
